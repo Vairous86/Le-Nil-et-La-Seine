@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import PdfViewer from "./components/PdfViewer";
 
 interface DomainData {
   id: string;
@@ -347,187 +348,185 @@ export default function Home() {
               className="absolute inset-0 cursor-zoom-out"
             />
             
-            <div className="glass-panel w-full max-w-6xl max-h-[95vh] overflow-y-auto rounded-none border-gold/30 shadow-[0_15px_50px_rgba(0,0,0,0.8)] relative z-10 p-6 md:p-10 flex flex-col gap-6 transform scale-100 transition-all duration-300">
+            <div className="glass-panel w-full max-w-6xl max-h-[95vh] overflow-hidden rounded-none border-gold/30 shadow-[0_15px_50px_rgba(0,0,0,0.8)] relative z-10 flex flex-col transform scale-100 transition-all duration-300">
               
               {/* Corner decorative accents */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-gold" />
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-gold" />
-              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-gold" />
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-gold" />
+              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-gold z-20 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-gold z-20 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-gold z-20 pointer-events-none" />
+              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-gold z-20 pointer-events-none" />
 
-              {/* Close Button */}
-              <button
-                onClick={() => setActiveDomain(null)}
-                className="absolute top-6 right-6 p-2 text-zinc-400 hover:text-gold transition-colors duration-300 cursor-pointer"
-                aria-label="Fermer"
-              >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              {/* Scrollable Container */}
+              <div className="flex-1 overflow-y-auto p-6 md:p-10 flex flex-col gap-6 relative">
 
-              {/* Header Title */}
-              <div className="text-left pr-8">
-                <span className="text-gold text-[10px] uppercase tracking-[0.3em] font-semibold block mb-1">
-                  Projet de Fin d&apos;Études
-                </span>
-                <h2 className="text-3xl md:text-4xl font-cormorant font-bold italic text-gold-light">
-                  {activeDomain.nameFr}
-                </h2>
-              </div>
-
-              <div className="w-full h-[1px] bg-gradient-to-r from-gold via-gold-dark/25 to-transparent" />
-
-              {/* Content Grid: PDF on left, details on right */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-                
-                {/* Left PDF column */}
-                <div className="lg:col-span-7 flex flex-col gap-3">
-                  <div className="flex justify-between items-center">
-                    <h4 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold">
-                      Document de Recherche PDF
-                    </h4>
-                    <a 
-                      href={encodeURI(activeDomain.pdfPath)} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-xs text-gold hover:text-gold-light underline flex items-center gap-1 transition-colors"
-                    >
-                      Ouvrir plein écran ↗
-                    </a>
-                  </div>
-                  
-                  <div className="w-full h-[400px] md:h-[500px] bg-black/40 border border-gold-dark/20 relative overflow-hidden">
-                    <iframe 
-                      src={`${encodeURI(activeDomain.pdfPath)}#toolbar=1`} 
-                      className="w-full h-full border-0"
-                      title={`PDF ${activeDomain.nameFr}`}
-                    />
-                  </div>
-                </div>
-
-                {/* Right Metadata column */}
-                <div className="lg:col-span-5 flex flex-col justify-between gap-6">
-                  {activeDomain.id === "teams" ? (
-                    <div className="flex flex-col gap-5">
-                      <div>
-                        <h4 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold mb-3">
-                          Les Équipes par Domaine
-                        </h4>
-                        <div className="flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-1">
-                          {domains.map((d) => (
-                            <div key={d.id} className="p-3 bg-black/30 border border-gold-dark/10 flex flex-col gap-1">
-                              <span className="text-xs text-gold font-semibold uppercase tracking-wider font-cormorant">
-                                {d.nameFr.replace("Le domaine ", "")}
-                              </span>
-                              <p className="text-xs text-zinc-300 font-light leading-relaxed">
-                                {d.members.join(" — ")}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ) : activeDomain.id === "concept" ? (
-                    <div className="flex flex-col gap-5">
-                      <div>
-                        <h4 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold mb-2">
-                          Concept & Objectif
-                        </h4>
-                        <div className="text-zinc-300 text-xs md:text-sm font-light leading-relaxed text-justify flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-1">
-                          <p>
-                            <strong>Le Nil et La Seine</strong> est un projet éditorial d&apos;excellence conçu par les étudiants du département de français. Il fait office de pont culturel et intellectuel reliant l&apos;Égypte et la France à travers l&apos;étude approfondie de six domaines essentiels de la vie moderne.
-                          </p>
-                          <p>
-                            Ce travail illustre le niveau académique exceptionnel des étudiants, conciliant de rigoureuses recherches méthodologiques, la synthèse documentaire et une traduction pointue des textes académiques. L&apos;objectif ultime est de mettre en lumière la synergie franco-égyptienne historique et de valoriser le bilinguisme universitaire.
-                          </p>
-                          <p>
-                            En mobilisant leurs connaissances avancées en langue française et en techniques de recherche scientifique, les diplômés apportent une contribution significative à la compréhension mutuelle des enjeux sociopolitiques, économiques et culturels contemporains.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-5">
-                      <div>
-                        <h4 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold mb-2">
-                          Description & Contexte
-                        </h4>
-                        <p className="text-zinc-300 font-light leading-relaxed text-justify text-sm md:text-base">
-                          {activeDomain.descriptionFr}
-                        </p>
-                      </div>
-
-                      <div>
-                        <h4 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold mb-2">
-                          Points Clés
-                        </h4>
-                        <ul className="flex flex-wrap gap-2">
-                          {activeDomain.highlightsFr.map((hl, index) => (
-                            <li 
-                              key={index}
-                              className="px-3 py-1 bg-gold-dark/10 border border-gold-dark/30 text-xs text-gold-light"
-                            >
-                              {hl}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Bottom section of the right column (supervision or members) */}
-                  <div className="flex flex-col gap-4">
-                    <div className="w-full h-[1px] bg-zinc-900" />
-                    
-                    {activeDomain.id === "concept" || activeDomain.id === "teams" ? (
-                      <div className="flex flex-col gap-1.5">
-                        <h4 className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold">
-                          Supervision Académique
-                        </h4>
-                        <p className="text-xs text-gold-light italic font-cormorant">
-                          Sous la direction de : Dr. Héba EL Zomor & Dr. Mai Tarek
-                        </p>
-                        <p className="text-xs text-gold-light italic font-cormorant">
-                          Directeur exécutif : Dr. Chaymaa Lachine
-                        </p>
-                      </div>
-                    ) : (
-                      <>
-                        <h4 className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold">
-                          Équipe de Recherche
-                        </h4>
-                        
-                        <div className="flex flex-col gap-2">
-                          {activeDomain.members.map((member, idx) => (
-                            <div 
-                              key={idx}
-                              className="px-3 py-2 bg-black/30 border border-gold-dark/10 text-sm text-zinc-300 font-medium tracking-wide flex items-center gap-2"
-                            >
-                              <span className="w-6 h-6 rounded-full bg-gold-dark text-black text-[10px] font-bold flex items-center justify-center shrink-0">
-                                {member.split(" ").map(w => w[0]).join("")}
-                              </span>
-                              <span>{member}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Footer action */}
-              <div className="flex justify-end mt-2 border-t border-zinc-900 pt-4">
+                {/* Close Button */}
                 <button
                   onClick={() => setActiveDomain(null)}
-                  className="px-6 py-2 border border-gold text-gold hover:bg-gold hover:text-black text-xs font-semibold tracking-widest uppercase transition-all duration-300 cursor-pointer"
+                  className="absolute top-6 right-6 p-2 text-zinc-400 hover:text-gold transition-colors duration-300 cursor-pointer"
+                  aria-label="Fermer"
                 >
-                  Fermer
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
-              </div>
 
+                {/* Header Title */}
+                <div className="text-left pr-8">
+                  <span className="text-gold text-[10px] uppercase tracking-[0.3em] font-semibold block mb-1">
+                    Projet de Fin d&apos;Études
+                  </span>
+                  <h2 className="text-3xl md:text-4xl font-cormorant font-bold italic text-gold-light">
+                    {activeDomain.nameFr}
+                  </h2>
+                </div>
+
+                <div className="w-full h-[1px] bg-gradient-to-r from-gold via-gold-dark/25 to-transparent" />
+
+                {/* Content Grid: PDF on left, details on right */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                  
+                  {/* Left PDF column */}
+                  <div className="lg:col-span-7 flex flex-col gap-3">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold">
+                        Document de Recherche PDF
+                      </h4>
+                      <a 
+                        href={encodeURI(activeDomain.pdfPath)} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-xs text-gold hover:text-gold-light underline flex items-center gap-1 transition-colors"
+                      >
+                        Ouvrir plein écran ↗
+                      </a>
+                    </div>
+                    
+                    <PdfViewer pdfPath={activeDomain.pdfPath} title={activeDomain.nameFr} />
+                  </div>
+
+                  {/* Right Metadata column */}
+                  <div className="lg:col-span-5 flex flex-col justify-between gap-6">
+                    {activeDomain.id === "teams" ? (
+                      <div className="flex flex-col gap-5">
+                        <div>
+                          <h4 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold mb-3">
+                            Les Équipes par Domaine
+                          </h4>
+                          <div className="flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-1">
+                            {domains.map((d) => (
+                              <div key={d.id} className="p-3 bg-black/30 border border-gold-dark/10 flex flex-col gap-1">
+                                <span className="text-xs text-gold font-semibold uppercase tracking-wider font-cormorant">
+                                  {d.nameFr.replace("Le domaine ", "")}
+                                </span>
+                                <p className="text-xs text-zinc-300 font-light leading-relaxed">
+                                  {d.members.join(" — ")}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ) : activeDomain.id === "concept" ? (
+                      <div className="flex flex-col gap-5">
+                        <div>
+                          <h4 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold mb-2">
+                            Concept & Objectif
+                          </h4>
+                          <div className="text-zinc-300 text-xs md:text-sm font-light leading-relaxed text-justify flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-1">
+                            <p>
+                              <strong>Le Nil et La Seine</strong> est un projet éditorial d&apos;excellence conçu par les étudiants du département de français. Il fait office de pont culturel et intellectuel reliant l&apos;Égypte et la France à travers l&apos;étude approfondie de six domaines essentiels de la vie moderne.
+                            </p>
+                            <p>
+                              Ce travail illustre le niveau académique exceptionnel des étudiants, conciliant de rigoureuses recherches méthodologiques, la synthèse documentaire et une traduction pointue des textes académiques. L&apos;objectif ultime est de mettre en lumière la synergie franco-égyptienne historique et de valoriser le bilinguisme universitaire.
+                            </p>
+                            <p>
+                              En mobilisant leurs connaissances avancées en langue française et en techniques de recherche scientifique, les diplômés apporte une contribution significative à la compréhension mutuelle des enjeux sociopolitiques, économiques et culturels contemporains.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-5">
+                        <div>
+                          <h4 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold mb-2">
+                            Description & Contexte
+                          </h4>
+                          <p className="text-zinc-300 font-light leading-relaxed text-justify text-sm md:text-base">
+                            {activeDomain.descriptionFr}
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold mb-2">
+                            Points Clés
+                          </h4>
+                          <ul className="flex flex-wrap gap-2">
+                            {activeDomain.highlightsFr.map((hl, index) => (
+                              <li 
+                                key={index}
+                                className="px-3 py-1 bg-gold-dark/10 border border-gold-dark/30 text-xs text-gold-light"
+                              >
+                                {hl}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Bottom section of the right column (supervision or members) */}
+                    <div className="flex flex-col gap-4">
+                      <div className="w-full h-[1px] bg-zinc-900" />
+                      
+                      {activeDomain.id === "concept" || activeDomain.id === "teams" ? (
+                        <div className="flex flex-col gap-1.5">
+                          <h4 className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold">
+                            Supervision Académique
+                          </h4>
+                          <p className="text-xs text-gold-light italic font-cormorant">
+                            Sous la direction de : Dr. Héba EL Zomor & Dr. Mai Tarek
+                          </p>
+                          <p className="text-xs text-gold-light italic font-cormorant">
+                            Directeur exécutif : Dr. Chaymaa Lachine
+                          </p>
+                        </div>
+                      ) : (
+                        <>
+                          <h4 className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold">
+                            Équipe de Recherche
+                          </h4>
+                          
+                          <div className="flex flex-col gap-2">
+                            {activeDomain.members.map((member, idx) => (
+                              <div 
+                                key={idx}
+                                className="px-3 py-2 bg-black/30 border border-gold-dark/10 text-sm text-zinc-300 font-medium tracking-wide flex items-center gap-2"
+                              >
+                                <span className="w-6 h-6 rounded-full bg-gold-dark text-black text-[10px] font-bold flex items-center justify-center shrink-0">
+                                  {member.split(" ").map(w => w[0]).join("")}
+                                </span>
+                                <span>{member}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Footer action */}
+                <div className="flex justify-end mt-2 border-t border-zinc-900 pt-4">
+                  <button
+                    onClick={() => setActiveDomain(null)}
+                    className="px-6 py-2 border border-gold text-gold hover:bg-gold hover:text-black text-xs font-semibold tracking-widest uppercase transition-all duration-300 cursor-pointer"
+                  >
+                    Fermer
+                  </button>
+                </div>
+
+              </div>
             </div>
           </div>
         )}
