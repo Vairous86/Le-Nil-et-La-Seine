@@ -102,7 +102,7 @@ export default function Home() {
     },
     {
       id: "sport",
-      nameFr: "Le domaine de sport",
+      nameFr: "Le domaine sportif",
       descriptionFr: "Analyse du sport comme vecteur universel d'intégration sociale et de diplomatie d'influence. Focus sur les événements bilatéraux franco-égyptiens et les valeurs olympiques.",
       highlightsFr: ["Diplomatie Sportive", "Valeurs Olympiques", "Événements Majeurs"],
       members: ["Mohamed Ebrahim", "Menna El Sayed", "Fatma El Sayed"],
